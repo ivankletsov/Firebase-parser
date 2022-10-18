@@ -1,0 +1,35 @@
+import time
+import pyrebase
+import urllib.request
+
+config = {"apiKey": "AIzaSyDCbGOM-TkhBRN7zunbyXAUUGzwBrhsWOc",
+          "databaseURL": "",
+          "authDomain": "test-a3be5.firebaseapp.com",
+          "projectId": "test-a3be5",
+          "storageBucket": "test-a3be5.appspot.com",
+          "messagingSenderId": "378270106860",
+          "serviceAccount": "test-a3be5-firebase-adminsdk-wtxtg-407da47c29.json"}
+#пароль от созданой почты
+password = '456758'
+#Сама почта
+mail = 'parser1@gmai.com'
+# Все что надо для работы скрипта
+firebase = pyrebase.initialize_app(config)
+storage = firebase.storage()
+auth = firebase.auth()
+auth.sign_in_with_email_and_password(mail, password)
+#bucket = storage.bucket
+
+#получение списка файлов
+files = storage.list_files()
+#получение названия файла из пути на него
+for file in files:
+    for i in str(file):
+        if i =='<' or '>':
+            unscope = str(file).replace('<', '')
+            unscope2 = unscope.replace('>', '')
+    file_name = unscope2[:0]+unscope2[30:]
+    #скачивание файлов                             Путь куда вы хотите качать файлы
+    storage.child(file_name).download(file_name, f'/Users/egor/Documents/data/{file_name}')
+    time.sleep(1)
+    print('success download')
